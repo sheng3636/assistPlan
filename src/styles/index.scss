@@ -1,0 +1,153 @@
+@import './variables.scss';
+@import './mixin.scss';
+@import './transition.scss';
+@import './element-ui.scss';
+@import './sidebar.scss';
+
+body {
+  height: 100%;
+  -moz-osx-font-smoothing: grayscale;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-family: Helvetica Neue, Helvetica, PingFang SC, Hiragino Sans GB, Microsoft YaHei, Arial, sans-serif;
+}
+
+label {
+  font-weight: 700;
+}
+
+html {
+  height: 100%;
+  box-sizing: border-box;
+}
+
+#app {
+  height: 100%;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+a:focus,
+a:active {
+  outline: none;
+}
+
+a,
+a:focus,
+a:hover {
+  cursor: pointer;
+  color: inherit;
+  text-decoration: none;
+}
+
+div:focus {
+  outline: none;
+}
+
+.clearfix {
+  &:after {
+    visibility: hidden;
+    display: block;
+    font-size: 0;
+    content: " ";
+    clear: both;
+    height: 0;
+  }
+}
+
+// main-container global css
+.app-container {
+  padding: 0 20px;
+}
+.main-wrapper {
+  background-color: #fff;
+  border: 1px solid #ddd;
+  margin-bottom: 15px;
+}
+.main-wrapper .main-header {
+  background-color: #f1f2f7;
+  padding: 0px 10px;
+  height: 45px;
+  line-height: 45px;
+  border-bottom: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  font-size: 15px;
+}
+.main-wrapper .main-content {
+  border-radius: 5px;
+  overflow-y: auto;
+  padding: 14px 10px;
+  min-height: 100px;
+}
+.param {
+  padding-top: 50px !important;
+}
+// 表格头部
+.tableRow {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  margin-top: 3px;
+
+  .countItem {
+    display: block;
+    margin-right: 10px;
+    width: 120px;
+    line-height: 40px;
+    text-align: center;
+    border-radius: 5px;
+    color: #fff;
+    font-size: 16px;
+    background: #409EFF;
+
+    &:nth-child(2) {
+      background: #67C23A;
+    }
+
+    &:nth-child(3) {
+      background: #909399;
+    }
+  }
+}
+
+.tableBtnGroup {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  margin-top: 11px;
+}
+.el-menu-item .iconfont {
+  margin-right: 5px;
+  font-size: 16px;
+  color: rgb(191, 203, 217);
+  padding: 0 8px;
+  // display: inline-block;
+  // width: 54px;
+  // height: 56px;
+  text-align: center;
+}
+.singleMenu .iconfont,
+.singleMenu span {
+  color: #65cea7;
+}
+.el-menu-item.is-active span {
+  color: inherit;
+}
+.el-submenu__title i {
+  color: rgb(191, 203, 217);
+  padding: 0 8px;
+  // display: inline-block;
+  // width: 54px;
+  // height: 56px;
+  text-align: center;
+}
+// .el-submenu__title{
+//   text-align: center;
+// }
+// #app .hideSidebar .submenu-title-noDropdown .el-tooltip {
+//   text-align: center;
+// }

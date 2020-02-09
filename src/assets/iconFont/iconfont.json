@@ -1,0 +1,100 @@
+{
+  "id": "1587451",
+  "name": "辅助规划编制平台",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "1426284",
+      "name": "写作",
+      "font_class": "xiezuo",
+      "unicode": "e60d",
+      "unicode_decimal": 58893
+    },
+    {
+      "icon_id": "1745749",
+      "name": "讨论",
+      "font_class": "discuss",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "2097082",
+      "name": "调研",
+      "font_class": "tiaoyan",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    },
+    {
+      "icon_id": "2113199",
+      "name": "数据",
+      "font_class": "shuju",
+      "unicode": "e609",
+      "unicode_decimal": 58889
+    },
+    {
+      "icon_id": "2237488",
+      "name": "标题",
+      "font_class": "biaoti",
+      "unicode": "e63a",
+      "unicode_decimal": 58938
+    },
+    {
+      "icon_id": "2948965",
+      "name": "分析",
+      "font_class": "fenxi",
+      "unicode": "e60f",
+      "unicode_decimal": 58895
+    },
+    {
+      "icon_id": "3192817",
+      "name": "计划",
+      "font_class": "jihua",
+      "unicode": "e602",
+      "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "5322138",
+      "name": "项目管理",
+      "font_class": "xiangmu",
+      "unicode": "e61c",
+      "unicode_decimal": 58908
+    },
+    {
+      "icon_id": "6504121",
+      "name": "菜单",
+      "font_class": "menu-two",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "8718269",
+      "name": "规划",
+      "font_class": "guihua",
+      "unicode": "e605",
+      "unicode_decimal": 58885
+    },
+    {
+      "icon_id": "9278750",
+      "name": "设 置",
+      "font_class": "shezhi",
+      "unicode": "e611",
+      "unicode_decimal": 58897
+    },
+    {
+      "icon_id": "11293705",
+      "name": "大纲管理",
+      "font_class": "dagangguanli",
+      "unicode": "e6b5",
+      "unicode_decimal": 59061
+    },
+    {
+      "icon_id": "11321187",
+      "name": "框架",
+      "font_class": "kuangjia",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    }
+  ]
+}
