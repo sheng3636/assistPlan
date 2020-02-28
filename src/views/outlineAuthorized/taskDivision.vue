@@ -34,27 +34,17 @@
             任务分工列表
           </el-col>
           <el-col :md="4" :offset="14" class="tableBtnGroup">
-            <el-button type="primary" size="mini">新增团队成员</el-button>
+            <el-button type="primary" size="mini" @click="selectDocu">选择文档</el-button>
           </el-col>
         </el-row>
       </div>
       <!--列表-->
-      <el-table
-        :data="projectData"
-        highlight-current-row
-        style="width: 100%;"
-        border
-      >
+      <el-table :data="projectData" highlight-current-row style="width: 100%;" border>
         <el-table-column type="index" width="65" label="序号" align="center" />
         <el-table-column prop="section" label="编写段落" :show-overflow-tooltip="true" align="center" />
         <el-table-column prop="leader" label="编写负责人" width="180" align="center" sortable />
         <el-table-column prop="time" label="时间节点" width="180" align="center" sortable />
-        <el-table-column
-          fixed="right"
-          label="操作"
-          align="center"
-          width="180"
-        >
+        <el-table-column fixed="right" label="操作" align="center" width="180">
           <template slot-scope="scope">
             <el-dropdown trigger="click">
               <el-button type="success" size="mini" class="tab_select">
@@ -69,16 +59,84 @@
         </el-table-column>
       </el-table>
       <!--分页-->
-      <el-pagination
-        :current-page.sync="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+      <el-pagination :current-page.sync="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" />
     </div>
+    <el-dialog title="任务分工" :visible.sync="divisionVisible" :close-on-click-modal="false" :close-on-press-escape="false"
+      width="55%">
+      <div class="divisinWrap">
+        <div class="docuWrap" v-if="docuOrPerson">
+          <el-form ref="queryParams" :model="queryParams" label-width="80px" label-position="top" class="searchWrap">
+            <el-input placeholder="请输入文档名称" v-model="input3" class="docuInput">
+              <el-button slot="append" icon="el-icon-search"></el-button>
+            </el-input>
+          </el-form>
+          <el-row>
+            <el-col :md="4" class="tableRow">请选择文档</el-col>
+            <el-col :md="4" :offset="16" class="tableRow">
+              <span class="sortItem active">日期</span>
+              <span class="sortItem">名称</span>
+              <span class="sortItem">大小</span>
+            </el-col>
+          </el-row>
+          <div class="outlineWrp">
+            <div class="outlineItem">
+              <div class="outlineInfo">
+                <h3>台州市"十四五"规划编制大纲</h3>
+                <p class="date">2019-12-21 12:21:12</p>
+              </div>
+
+              <el-row class="operationRow">
+                <el-col :md="8">规划类</el-col>
+                <el-col :md="16">
+                  <el-button type="success" size="mini" @click="checkedDocu">选择</el-button>
+                </el-col>
+              </el-row>
+            </div>
+            <div class="outlineItem">
+              <div class="outlineInfo">
+                <h3>台州市"十四五"规划编制大纲</h3>
+                <p class="date">2019-12-21 12:21:12</p>
+              </div>
+
+              <el-row class="operationRow">
+                <el-col :md="8">规划类</el-col>
+                <el-col :md="16">
+                  <el-button type="success" size="mini" @click="checkedDocu">选择</el-button>
+                </el-col>
+              </el-row>
+            </div>
+          </div>
+        </div>
+        <div class="personWrap" v-if="!docuOrPerson">
+          <h3 class="checkDocuName">XXX城市道路规划大纲V2</h3>
+          <el-table :data="personData" highlight-current-row style="width: 100%;" border>
+            <el-table-column type="index" width="65" label="序号" align="center" />
+            <el-table-column prop="section" label="编写段落" :show-overflow-tooltip="true" align="center" />
+            <el-table-column prop="leader" label="选择人员" width="200" align="center">
+              <template slot-scope="scope">
+                <el-select v-model="value" placeholder="请选择">
+                  <el-option v-for="item in scope.row.person" :key="item.value" :label="item.label" :value="item.value">
+                  </el-option>
+                </el-select>
+              </template>
+            </el-table-column>
+            <el-table-column prop="time" label="时间节点" width="260" align="center">
+              <template slot-scope="scope">
+                <el-date-picker v-model="scope.row.time" type="datetime" placeholder="选择日期时间">
+                </el-date-picker>
+              </template>
+            </el-table-column>
+          </el-table>
+        </div>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button type="info" @click="docunBack" v-if="!docuOrPerson">上一步</el-button>
+        <el-button @click="dialogClose">取 消</el-button>
+        <el-button type="primary" @click="onSubmit" v-if="!docuOrPerson">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -86,6 +144,25 @@
 export default {
   data() {
     return {
+      docuOrPerson: true,
+      personData: [
+        {
+          section: '发展基础和发展环境',
+          person: [
+            {
+              value: 0,
+              label: '杜健'
+            },
+            {
+              value: 1,
+              label: '常云峰'
+            }
+          ],
+          time: ''
+        }
+      ],
+      input3: '',
+      divisionVisible: false, // 是否显示分工弹窗
       total: 4,
       currentPage: 0,
       pageSize: 10,
@@ -121,10 +198,17 @@ export default {
       ]
     }
   },
-  mounted() {
-
-  },
+  mounted() {},
   methods: {
+    selectDocu() {
+      this.divisionVisible = true
+    },
+    checkedDocu() {
+      this.docuOrPerson = false
+    },
+    docunBack() {
+      this.docuOrPerson = true
+    },
     editClick(row) {
       console.log(row)
     },
@@ -141,6 +225,13 @@ export default {
     handleCurrentChange(val) {
       this.params.page = val
       this.getAreaList(this.params)
+    },
+
+    dialogClose() {
+      this.divisionVisible = false
+    },
+    onSubmit() {
+      this.divisionVisible = false
     },
     // 查询
     queryList: function(formName) {
@@ -161,39 +252,23 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.tableRow{
+.searchWrap {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-top: 3px;
-  .countItem{
-    display: block;
-    width: 120px;
-    line-height: 40px;
-    text-align: center;
-    border-radius: 5px;
-    color: #fff;
-    font-size: 16px;
-    background:rgba(22, 155, 213, 1);
-    &:nth-child(2){
-      background: rgba(102, 204, 0, 1);
-    }
-    &:nth-child(3){
-      background: rgba(102, 102, 102, 1);
-    }
+  justify-content: center;
+  width: 100%;
+  margin-bottom: 15px;
+
+  .docuInput {
+    width: 90%;
   }
 }
-.tableBtnGroup{
+.outlineWrp {
   display: flex;
-  align-items: center;
-  justify-content: flex-end;
-  margin-top: 11px;
+  justify-content: space-around;
 }
-.sss{
-  display: flex;
-  justify-content: space-between;
-  button{
-    margin-right: 5px;
-  }
+.checkDocuName {
+  font-size: 20px;
+  margin: 0px auto 15px auto;
+  text-align: center;
 }
 </style>

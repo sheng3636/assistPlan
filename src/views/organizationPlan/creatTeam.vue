@@ -9,7 +9,8 @@
             <el-col :md="5" :sm="4">
               <el-form-item label="部门" prop="projectNum">
                 <el-select v-model="queryParams.projectNum" placeholder="请选择部门" style="width:100%">
-                  <el-option v-for="item in origanizationOpts" :key="item.value" :label="item.label" :value="item.value">
+                  <el-option v-for="item in origanizationOpts" :key="item.value" :label="item.label"
+                    :value="item.value">
                   </el-option>
                 </el-select>
               </el-form-item>
@@ -35,7 +36,7 @@
         <el-row>
           <el-col :span="1">团队列表</el-col>
           <el-col :md="10" class="tableRow">
-            <span class="countItem">3 人</span>
+            <span class="countItem blue">3 人</span>
           </el-col>
           <el-col :md="4" :offset="9" class="tableBtnGroup">
             <el-button type="primary" size="mini" @click="showAddDialog()">新增团队成员</el-button>
@@ -51,39 +52,32 @@
         <el-table-column prop="phone" label="联系方式" :show-overflow-tooltip="true" align="center" />
         <el-table-column fixed="right" label="操作" align="center" width="180">
           <template slot-scope="scope">
-            <el-dropdown trigger="click">
-              <el-button type="success" size="mini" class="tab_select">
-                更多菜单
-                <i class="el-icon-arrow-down el-icon--right" />
-              </el-button>
-              <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="editClick(scope.row)">编 辑</el-dropdown-item>
-                <el-dropdown-item @click.native="detailClick(scope.row)">详 情</el-dropdown-item>
-                <el-dropdown-item @click.native="deleteClick(scope.row.equiptId)">删 除</el-dropdown-item>
-              </el-dropdown-menu>
-            </el-dropdown>
+            <el-button type="success" size="mini" @click="deleteClick(scope.row.equiptId)">删 除</el-button>
           </template>
         </el-table-column>
       </el-table>
       <!--分页-->
-      <el-pagination
-        :current-page.sync="currentPage"
-        :page-sizes="[10, 20, 30, 40]"
-        :page-size="pageSize"
-        layout="total, sizes, prev, pager, next, jumper"
-        :total="total"
-        @size-change="handleSizeChange"
-        @current-change="handleCurrentChange"
-      />
+      <el-pagination :current-page.sync="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pageSize"
+        layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+        @current-change="handleCurrentChange" />
     </div>
-    <add-edit-project :dialog-visible="dialogVisible" :dialog-title="dialogTitle" @dialogClose="dialogClose"></add-edit-project>
+    <el-dialog title="新增团队成员" :visible.sync="dialogVisible" :close-on-click-modal="false"
+      :close-on-press-escape="false" :before-close="dialogClose" width="35%">
+      <div class="dialogBody">
+        <el-tree :data="branchData" :props="defaultProps" ref="tree"  highlight-current node-key="id" show-checkbox
+          default-expand-all>
+        </el-tree>
+      </div>
+      <span slot="footer" class="dialog-footer">
+        <el-button @click="dialogClose">取 消</el-button>
+        <el-button type="primary" @click="onSubmit">确 定</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
 <script>
-import addEditProject from './components/addEditTeam'
 export default {
-  components:{addEditProject},
   data() {
     return {
       origanizationOpts: [
@@ -127,8 +121,182 @@ export default {
           phone: '13083445698'
         }
       ],
-      dialogVisible:false,// 是否弹出新增编辑弹窗
-      dialogTitle:'新增团队成员',// 弹窗标题
+      dialogVisible: false, // 是否弹出新增编辑弹窗
+      dialogTitle: '新增团队成员', // 弹窗标题
+      branchData: [
+        {
+          id: '1',
+          label: '浙江省发展规划院',
+          children: [
+            {
+              id: '1-1',
+              label: '办公室',
+              children: [
+                {
+                  id: '1-1-1',
+                  label: '徐萌'
+                },
+                {
+                  id: '1-1-2',
+                  label: '刘堂福'
+                }
+              ]
+            },
+            {
+              id: '2-1',
+              label: '能源与环境处',
+              children: [
+                {
+                  id: '2-1-1',
+                  label: '范玲'
+                },
+                {
+                  id: '2-1-2',
+                  label: '何恒'
+                },
+                {
+                  id: '2-1-3',
+                  label: '钟晓军'
+                }
+              ]
+            },
+            {
+              id: '3-1',
+              label: '总师办',
+              children: [
+                {
+                  id: '3-1-1',
+                  label: '刘竞'
+                },
+                {
+                  id: '3-1-2',
+                  label: '张颖'
+                }
+              ]
+            },
+            {
+              id: '4-1',
+              label: '城乡建设处',
+              children: [
+                {
+                  id: '4-1-1',
+                  label: '柴贤龙'
+                },
+                {
+                  id: '4-1-2',
+                  label: '沈帆'
+                },
+                {
+                  id: '4-1-3',
+                  label: '吴洁珍'
+                }
+              ]
+            },
+            {
+              id: '5-1',
+              label: '综合处',
+              children: [
+                {
+                  id: '5-1-1',
+                  label: '潘毅刚'
+                },
+                {
+                  id: '5-1-2',
+                  label: '庞亚君'
+                }
+              ]
+            },
+            {
+              id: '6-1',
+              label: '社会发展处',
+              children: [
+                {
+                  id: '6-1-1',
+                  label: '董波'
+                },
+                {
+                  id: '6-1-2',
+                  label: '俞莹'
+                }
+              ]
+            },
+            {
+              id: '7-1',
+              label: '经济研究所',
+              children: [
+                {
+                  id: '7-1-1',
+                  label: '陈文杰'
+                },
+                {
+                  id: '7-1-2',
+                  label: '何垒'
+                }
+              ]
+            },
+            {
+              id: '8-1',
+              label: '机关党委(纪委)',
+              children: [
+                {
+                  id: '8-1-1',
+                  label: '王质明'
+                },
+                {
+                  id: '8-1-2',
+                  label: '周智悦'
+                }
+              ]
+            },
+            {
+              id: '9-1',
+              label: '区域发展处',
+              children: [
+                {
+                  id: '9-1-1',
+                  label: '周世锋'
+                },
+                {
+                  id: '9-1-2',
+                  label: '沈锋'
+                },
+                {
+                  id: '9-1-3',
+                  label: '秦诗立'
+                }
+              ]
+            },
+            {
+              id: '10-1',
+              label: '服务中心',
+              children: [
+                {
+                  id: '10-1-1',
+                  label: '陆军'
+                }
+              ]
+            },
+            {
+              id: '11-1',
+              label: '产业发展处',
+              children: [
+                {
+                  id: '11-1-1',
+                  label: '童相娟'
+                },
+                {
+                  id: '11-1-2',
+                  label: '郭鹏程'
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      defaultProps: {
+        children: 'children',
+        label: 'label'
+      }
     }
   },
   mounted() {},
@@ -142,12 +310,6 @@ export default {
     dialogClose() {
       this.dialogVisible = false
     },
-    editClick(row) {
-      console.log(row)
-    },
-    detailClick(row) {
-      console.log(row)
-    },
     deleteClick(row) {
       console.log(row)
     },
@@ -158,6 +320,10 @@ export default {
     handleCurrentChange(val) {
       this.params.page = val
       this.getAreaList(this.params)
+    },
+    // 提交上传表单并清空表单
+    onSubmit(formName) {
+      console.log(this.$refs.tree.getCheckedKeys(true))
     },
     // 查询
     queryList: function(formName) {
@@ -177,5 +343,3 @@ export default {
   }
 }
 </script>
-<style lang="scss" scoped>
-</style>

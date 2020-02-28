@@ -6,25 +6,60 @@
   "description": "",
   "glyphs": [
     {
+      "icon_id": "8765262",
+      "name": "ppt",
+      "font_class": "ppt",
+      "unicode": "e63f",
+      "unicode_decimal": 58943
+    },
+    {
+      "icon_id": "1469212",
+      "name": "exclefile",
+      "font_class": "exclefile",
+      "unicode": "e855",
+      "unicode_decimal": 59477
+    },
+    {
+      "icon_id": "1473537",
+      "name": "音乐",
+      "font_class": "yinyue",
+      "unicode": "e680",
+      "unicode_decimal": 59008
+    },
+    {
+      "icon_id": "6294488",
+      "name": "word",
+      "font_class": "word",
+      "unicode": "e64b",
+      "unicode_decimal": 58955
+    },
+    {
+      "icon_id": "9512676",
+      "name": "视频",
+      "font_class": "video",
+      "unicode": "e63e",
+      "unicode_decimal": 58942
+    },
+    {
+      "icon_id": "2551682",
+      "name": "公共-红旗",
+      "font_class": "hongqi",
+      "unicode": "e641",
+      "unicode_decimal": 58945
+    },
+    {
+      "icon_id": "2559500",
+      "name": "用户编辑",
+      "font_class": "yonghubianji",
+      "unicode": "e6b4",
+      "unicode_decimal": 59060
+    },
+    {
       "icon_id": "1426284",
       "name": "写作",
       "font_class": "xiezuo",
       "unicode": "e60d",
       "unicode_decimal": 58893
-    },
-    {
-      "icon_id": "1745749",
-      "name": "讨论",
-      "font_class": "discuss",
-      "unicode": "e600",
-      "unicode_decimal": 58880
-    },
-    {
-      "icon_id": "2097082",
-      "name": "调研",
-      "font_class": "tiaoyan",
-      "unicode": "e670",
-      "unicode_decimal": 58992
     },
     {
       "icon_id": "2113199",
@@ -48,6 +83,34 @@
       "unicode_decimal": 58895
     },
     {
+      "icon_id": "11321187",
+      "name": "框架",
+      "font_class": "kuangjia",
+      "unicode": "e684",
+      "unicode_decimal": 59012
+    },
+    {
+      "icon_id": "6504121",
+      "name": "菜单",
+      "font_class": "menu-two",
+      "unicode": "e601",
+      "unicode_decimal": 58881
+    },
+    {
+      "icon_id": "1745749",
+      "name": "讨论",
+      "font_class": "discuss",
+      "unicode": "e600",
+      "unicode_decimal": 58880
+    },
+    {
+      "icon_id": "2097082",
+      "name": "调研",
+      "font_class": "tiaoyan",
+      "unicode": "e670",
+      "unicode_decimal": 58992
+    },
+    {
       "icon_id": "3192817",
       "name": "计划",
       "font_class": "jihua",
@@ -60,13 +123,6 @@
       "font_class": "xiangmu",
       "unicode": "e61c",
       "unicode_decimal": 58908
-    },
-    {
-      "icon_id": "6504121",
-      "name": "菜单",
-      "font_class": "menu-two",
-      "unicode": "e601",
-      "unicode_decimal": 58881
     },
     {
       "icon_id": "8718269",
@@ -88,13 +144,6 @@
       "font_class": "dagangguanli",
       "unicode": "e6b5",
       "unicode_decimal": 59061
-    },
-    {
-      "icon_id": "11321187",
-      "name": "框架",
-      "font_class": "kuangjia",
-      "unicode": "e684",
-      "unicode_decimal": 59012
     }
   ]
 }

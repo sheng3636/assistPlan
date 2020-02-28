@@ -31,11 +31,11 @@ import Layout from '@/layout'
  * all roles can be accessed
  */
 export const constantRoutes = [
-  {
-    path: '/login',
-    component: () => import('@/views/login/index'),
-    hidden: true
-  },
+  // {
+  //   path: '/login',
+  //   component: () => import('@/views/login/index'),
+  //   hidden: true
+  // },
 
   {
     path: '/404',
@@ -261,7 +261,7 @@ export const constantRoutes = [
     path: '*',
     redirect: '/404',
     hidden: true
-  }
+  }    
 ]
 
 const createRouter = () => new Router({

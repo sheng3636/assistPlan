@@ -9,13 +9,13 @@
       <ul class="mapMenuUl" v-if="!isMapMenu">
         <li @click="showMapMenu"><i class="el-icon-d-arrow-right"></i></li>
         <li @click="openSiLu('http://47.103.104.87:8882/hzgh/#/thinking')">思路目标地图</li>
-        <li @click="openSiLu('http://139.196.226.113/ditu/?id=2')">空间区域地图</li>
-        <li @click="openSiLu('http://139.196.226.113/ditu/?id=3')">产业创新地图</li>
-        <li @click="openSiLu('http://139.196.226.113/ditu/?id=4')">人口与公共服务地图</li>
-        <li @click="openSiLu('http://139.196.226.113/ditu/?id=5')">城乡统筹地图</li>
-        <li @click="openSiLu('http://139.196.226.113/ditu/?id=6')">对外开放地图</li>
-        <li @click="openSiLu('http://139.196.226.113/ditu/?id=7')">资源生态环境地图</li>
-        <li @click="openSiLu('http://139.196.226.113/ditu/?id=8')">基础设施地图</li>
+        <li @click="openSiLu('http://118.190.204.249:8103/#/home?id=2')">空间区域地图</li>
+        <li @click="openSiLu('http://118.190.204.249:8103/#/home?id=3')">产业创新地图</li>
+        <li @click="openSiLu('http://118.190.204.249:8103/#/home?id=4')">人口与公共服务地图</li>
+        <li @click="openSiLu('http://118.190.204.249:8103/#/home?id=5')">城乡统筹地图</li>
+        <li @click="openSiLu('http://118.190.204.249:8103/#/home?id=6')">对外开放地图</li>
+        <li @click="openSiLu('http://118.190.204.249:8103/#/home?id=7')">资源生态环境地图</li>
+        <li @click="openSiLu('http://118.190.204.249:8103/#/home?id=8')">基础设施地图</li>
         <li>数据管理系统</li>
       </ul>
     </div>

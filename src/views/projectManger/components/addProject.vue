@@ -1,31 +1,32 @@
 <template>
   <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" :close-on-click-modal="false"
     :close-on-press-escape="false" :before-close="dialogClose" width="45%">
-    <el-form class="dialogBody" ref="dialogForm" :model="addForm" :rules="rules" label-width="80px" label-position="top">
+    <el-form class="dialogBody" ref="dialogForm" :model="addEditForm" :rules="rules" label-width="80px"
+      label-position="top">
       <div class="bodyLeft">
         <el-form-item label="项目名称" prop="projectName">
-          <el-input v-model="addForm.projectName" placeholder="请输入项目名称" />
+          <el-input v-model="addEditForm.projectName" placeholder="请输入项目名称" />
         </el-form-item>
         <el-form-item label="项目内部编号" prop="projectInnerNum">
-          <el-input v-model="addForm.projectInnerNum" placeholder="请输入项目内部编号" />
+          <el-input v-model="addEditForm.projectInnerNum" placeholder="请输入项目内部编号" />
         </el-form-item>
         <el-form-item label="项目外部编号" prop="projectOuterNum">
-          <el-input v-model="addForm.projectOuterNum" placeholder="请输入项目外部编号" />
+          <el-input v-model="addEditForm.projectOuterNum" placeholder="请输入项目外部编号" />
         </el-form-item>
         <el-form-item label="项目主要内容" prop="projectMemo">
-          <el-input v-model="addForm.projectMemo" type="textarea" :rows="5" placeholder="请输入项目主要内容" />
+          <el-input v-model="addEditForm.projectMemo" type="textarea" :rows="5" placeholder="请输入项目主要内容" />
         </el-form-item>
       </div>
       <div class="bodyRight">
         <p class="treeLabel"><span>*</span>项目负责人</p>
-        <el-tree :data="branchData" :props="defaultProps" ref="tree" highlight-current node-key="id" show-checkbox
-          @check-change="handleCheckChange" default-expand-all class="treeWrap">
+        <el-tree :data="branchData" :props="defaultProps" ref="tree" :default-checked-keys='addEditForm.projectLeader' highlight-current node-key="id" show-checkbox
+          default-expand-all class="treeWrap">
         </el-tree>
       </div>
     </el-form>
     <span slot="footer" class="dialog-footer">
       <el-button @click="dialogClose">取 消</el-button>
-      <el-button type="primary"  @click="onSubmit('dialogForm')">确 定</el-button>
+      <el-button type="primary" @click="onSubmit('dialogForm')">确 定</el-button>
     </span>
   </el-dialog>
 </template>
@@ -232,19 +233,15 @@ export default {
       type: Boolean,
       defalut: false
     },
-    addForm: {
+    addEditForm: {
       type: Object,
       defalut: {}
     }
   },
-  mounted(){
-    console.log(this.addForm);
-    
+  mounted() {
+    console.log(this.addEditForm)
   },
   methods: {
-    handleCheckChange() {
-      console.log(this.$refs.tree.getCheckedKeys())
-    },
     // 关闭弹窗时向父组件发送一个事件
     dialogClose() {
       this.$refs.dialogForm.resetFields()
@@ -252,6 +249,7 @@ export default {
     },
     // 提交上传表单并清空表单
     onSubmit(formName) {
+      console.log(this.$refs.tree.getCheckedKeys(true))
       this.$refs[formName].validate(valid => {
         if (valid) {
           // uploadDocu(formData).then(res => {
@@ -273,35 +271,6 @@ export default {
 }
 </script>
 <style lang="scss" >
-.dialogBody {
-  .treeWrap {
-    padding: 10px 0;
-    max-height: 440px;
-    overflow-y: auto;
-    scrollbar-arrow-color: #f4ae21; /**/ /*三角箭头的颜色*/
-    scrollbar-face-color: #333; /**/ /*立体滚动条的颜色*/
-    scrollbar-3dlight-color: #666; /**/ /*立体滚动条亮边的颜色*/
-    scrollbar-highlight-color: #666; /**/ /*滚动条空白部分的颜色*/
-    scrollbar-shadow-color: #999; /**/ /*立体滚动条阴影的颜色*/
-    scrollbar-darkshadow-color: #666; /**/ /*立体滚动条强阴影的颜色*/
-    scrollbar-track-color: #666; /**/ /*立体滚动条背景颜色*/
-    scrollbar-base-color: #f8f8f8; /**/ /*滚动条的基本颜色*/
-    &::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.5);
-      background-color: rgba(255, 255, 255, 0.5);
-      border-radius: 3px;
-    }
-    &::-webkit-scrollbar-track {
-      -webkit-box-shadow: inset 0 0 6px rgba(255, 255, 255, 0.5);
-      background-color: rgba(101, 206, 167, 0.5);
-      border-radius: 3px;
-    }
-    &::-webkit-scrollbar {
-      width: 5px; /*对垂直流动条有效*/
-      height: 5px; /*对水平流动条有效*/
-    }
-  }
-}
 </style>
 <style lang="scss" scoped>
 .dialogBody {
@@ -316,14 +285,14 @@ export default {
     width: 54%;
     height: 500px;
     background: rgba(242, 242, 242, 1);
-    .treeLabel{
+    .treeLabel {
       padding: 0 15px;
       font-size: 14px;
       color: #606266;
       font-weight: 700;
-      span{
+      span {
         margin-right: 4px;
-        color:#F56C6C;
+        color: #f56c6c;
         font-weight: normal;
       }
     }
