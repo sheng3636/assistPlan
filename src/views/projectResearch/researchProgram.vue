@@ -2,7 +2,7 @@
 <template>
   <div class="app-container">
     <div class="main-wrapper">
-      <div class="main-header">项目管理</div>
+      <div class="main-header">方案管理</div>
       <div class="main-content">
         <el-form ref="queryParams" :model="queryParams" label-width="80px" label-position="top">
           <el-row>
@@ -25,16 +25,17 @@
     <div class="main-wrapper">
       <div class="main-header clearfix">
         <el-row>
-          <el-col :md="4" class="tableRow">
+          <el-col :span="1">方案列表</el-col>
+          <el-col :md="15" class="tableRow">
             <span class="countItem blue">全部方案</span>
             <span class="countItem cyan">最近使用</span>
           </el-col>
-          <el-col :md="4" :offset="13" class="tableRow">
+          <el-col :md="4" class="tableRow">
             <span class="sortItem active">日期</span>
             <span class="sortItem">名称</span>
             <span class="sortItem">大小</span>
           </el-col>
-          <el-col :md="3" class="tableBtnGroup">
+          <el-col :md="4" class="tableBtnGroup">
             <el-button type="success" size="mini">上传</el-button>
             <el-button type="primary" size="mini" @click="createOutline">新建</el-button>
           </el-col>

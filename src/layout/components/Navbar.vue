@@ -4,9 +4,9 @@
     <div class="systemInfo">
       <el-row>
         <el-col :span="24" class="headerTxt">
-          <span>台州市十四五规划纲要</span>
-          <span>内部编号：2019011552598</span>
-          <span>外部编号：2019011552598</span>
+          <span>项目名称：{{this.$store.state.projectInfo.projectName}}</span>
+          <span>内部编号：{{this.$store.state.projectInfo.projectInnerNum}}</span>
+          <span>外部编号：{{this.$store.state.projectInfo.projectOuterNum}}</span>
         </el-col>
       </el-row>
     </div>

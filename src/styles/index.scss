@@ -141,9 +141,13 @@ div:focus {
   margin-top: 11px;
 }
 .outlineWrp {
+  display: flex;
+  flex-wrap: wrap;
   padding: 10px;
 
   .outlineItem {
+    margin-right: 7px;
+    margin-bottom: 15px;
     width: 405px;
     height: 160px;
     border: 2px solid rgb(101, 206, 167);

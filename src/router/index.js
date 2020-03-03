@@ -118,7 +118,7 @@ export const constantRoutes = [
         path: 'Tinymce',
         name: '新建大纲',
         hidden: true,
-        component: () => import('@/views/outlineAuthorized/Tinymce'),
+        component: () => import('@/views/outlineAuthorized/create'),
         meta: {
           title: '新建大纲',
           icon: ''

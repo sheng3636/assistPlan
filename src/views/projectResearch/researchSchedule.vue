@@ -42,15 +42,27 @@
             <span class="countItem gray">进行中 0</span>
           </el-col>
           <el-col :md="4" :offset="9" class="tableBtnGroup">
-            <el-button type="primary" size="mini" @click="showSchedleDialog">新建调研日程</el-button>
+            <el-button type="primary" size="mini" @click="addEditClick('add')">新建调研日程</el-button>
           </el-col>
         </el-row>
       </div>
       <el-table :data="projectData" highlight-current-row style="width: 100%;" border>
         <el-table-column type="index" width="65" label="序号" align="center" />
-        <el-table-column prop="projectNum" label="调研地点" width="220" align="center" sortable />
-        <el-table-column prop="projectInnerNum" label="调研时间" width="180" align="center" sortable />
-        <el-table-column prop="projectOuterNum" label="参与人员" align="center" sortable />
+        <el-table-column prop="scheduleAddress" label="调研地点" width="420" align="center" sortable>
+          <template slot-scope="scope">
+            {{ scope.row.scheduleAddress.text }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="scheduleTime" label="调研时间" width="220" align="center" sortable >
+          <template slot-scope="scope">
+            {{ dateFormat(scope.row.scheduleTime[0]) }}
+          </template>
+        </el-table-column>
+        <el-table-column prop="schedulePeople" label="参与人员" align="center" sortable>
+          <template slot-scope="scope">
+            {{scope.row.schedulePeople.text}}
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" label="操作" align="center" width="180">
           <template slot-scope="scope">
             <el-dropdown trigger="click">
@@ -58,7 +70,7 @@
                 更多菜单<i class="el-icon-arrow-down el-icon--right" />
               </el-button>
               <el-dropdown-menu slot="dropdown">
-                <el-dropdown-item @click.native="editClick(scope.row)">编 辑</el-dropdown-item>
+                <el-dropdown-item @click.native="addEditClick(scope.row)">编 辑</el-dropdown-item>
                 <el-dropdown-item @click.native="detailClick(scope.row)">详 情</el-dropdown-item>
                 <el-dropdown-item @click.native="deleteClick(scope.row.equiptId)">删 除</el-dropdown-item>
               </el-dropdown-menu>
@@ -71,82 +83,33 @@
         layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
         @current-change="handleCurrentChange" />
     </div>
-    <!-- 新增修改调研日程弹窗 -->
-    <el-dialog :title="dialogTitle" :visible.sync="scheduleVisible" :close-on-click-modal="false"
-      :close-on-press-escape="false" width="60%">
-      <el-form ref="scheduleForm" :model="scheduleForm" label-width="80px" label-position="top">
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="调研时间" prop="scheduleTime">
-              <el-date-picker v-model="scheduleForm.scheduleTime" type="datetimerange" range-separator="至"
-                start-placeholder="开始日期" end-placeholder="结束日期" style="width:100%">
-              </el-date-picker>
-            </el-form-item>
-          </el-col>
-          <el-col :span="13">
-            <el-form-item label="调研地址" prop="scheduleAddress">
-              <el-input v-model="scheduleForm.scheduleAddress" placeholder="请输入内容"></el-input>
-              <!-- <ul class="searchPanel">
-                
-              </ul> -->
-            </el-form-item>
-          </el-col>
-        </el-row>
-        <el-row>
-          <el-col :span="11">
-            <el-form-item label="调研人员" prop="schedulePeople">
-              <el-transfer filterable :filter-method="filterMethod" filter-placeholder="请输入姓名"
-                v-model="scheduleForm.schedulePeople" :data="transferData" :titles="['可选', '已选']" @change="handleChange"
-                style="display: flex; align-items: center; justify-content: space-between;">
-              </el-transfer>
-            </el-form-item>
-          </el-col>
-          <el-col :span="13">
-            <div id="map" style="width:100%;height:351px;"></div>
-          </el-col>
-        </el-row>
-      </el-form>
-      <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogClose">取 消</el-button>
-        <el-button type="primary" @click="onSubmit('createForm')">确 定</el-button>
-      </span>
-    </el-dialog>
+    <addEditSchedule :dialogVisible="scheduleVisible" :addEditForm="addEditForm" :dialogTitle="dialogTitle"
+      @dialogClose="dialogClose"></addEditSchedule>
   </div>
 </template>
 
 <script>
+import addEditSchedule from './addEditSchedule'
 export default {
+  components: { addEditSchedule },
   data() {
     return {
-      transferData: [
-        {
-          label: '徐萌-办公室',
-          key: '办公室'
-        },
-        {
-          label: '范玲-能源与环境处',
-          key: '能源与环境处'
-        },
-        {
-          label: '张颖-总师办',
-          key: '总师办'
-        },
-        {
-          label: '柴贤龙-城乡建设处',
-          key: '城乡建设处'
-        },
-        {
-          label: '潘毅刚-综合处',
-          key: '综合处'
-        }
-      ],
       dialogTitle: '新增日程', // 新增修改调研日程弹窗标题
       scheduleVisible: false, // 控制新增修改调研日程弹窗显影
-      scheduleForm: {
+      addEditForm: {
+        // 新增修改调研日程表单
         scheduleTime: [],
-        scheduleAddress: '',
-        schedulePeople: []
-      }, // 新增修改调研日程表单
+        scheduleAddress: {
+          text: '',
+          location: []
+        },
+        schedulePeople: {
+          text: '',
+          id: []
+          // text:'徐萌，刘堂福',
+          // id:['1-1-1','1-1-2']
+        }
+      },
       total: 1,
       currentPage: 0,
       pageSize: 10,
@@ -159,18 +122,44 @@ export default {
       },
       projectData: [
         {
-          projectNum: 'XXX市XXX省XXX路XXX号 ',
-          projectInnerNum: '2019-12-21  12:12:21',
-          projectOuterNum: '阿杰、蔡骏、常云峰、杜鹏、顾斌'
+          scheduleTime: ['1582951207', '1582951207'],
+          scheduleAddress: {
+            text: '秀怡苑',
+            location: []
+          },
+          schedulePeople: {
+            text: '徐萌，刘堂福',
+            id: ['1-1-1', '1-1-2']
+          }
         }
-      ],
-      filterMethod(query, item) {
-        return item.label.indexOf(query) > -1
-      }
+      ]
     }
   },
   mounted() {},
   methods: {
+    // 时间格式化
+    dateFormat(dateTime) {
+      var date = new Date(dateTime * 1000) //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      var year = date.getFullYear(),
+        month = ('0' + (date.getMonth() + 1)).slice(-2),
+        sdate = ('0' + date.getDate()).slice(-2),
+        hour = ('0' + date.getHours()).slice(-2),
+        minute = ('0' + date.getMinutes()).slice(-2),
+        second = ('0' + date.getSeconds()).slice(-2)
+      return (
+        year +
+        '-' +
+        month +
+        '-' +
+        sdate +
+        ' ' +
+        hour +
+        ':' +
+        minute +
+        ':' +
+        second
+      )
+    },
     handleChange(value, direction, movedKeys) {
       console.log(value, direction, movedKeys)
     },
@@ -189,8 +178,30 @@ export default {
         }
       })
     },
-    editClick(row) {
-      console.log(row)
+    // 弹出新增编辑弹窗
+    addEditClick(row) {
+      this.scheduleVisible = true
+      if (row !== 'add') {
+        this.dialogTitle = '编辑日程'
+        this.addEditForm = {
+          scheduleTime: row.scheduleTime,
+          scheduleAddress: row.scheduleAddress,
+          schedulePeople: row.schedulePeople
+        }
+      } else {
+        this.dialogTitle = '新增日程'
+        this.addEditForm = {
+          scheduleTime: [],
+          scheduleAddress: {
+            text: '',
+            location: []
+          },
+          schedulePeople: {
+            text: '',
+            id: []
+          }
+        }
+      }
     },
     detailClick(row) {
       console.log(row)
@@ -225,12 +236,4 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
-.searchPanel {
-  margin-top: 5px;
-  width: 100%;
-  height: 200px;
-  border-bottom-right-radius: 4px;
-  border-bottom-left-radius: 4px;
-  border: 1px solid #dcdfe6;
-}
 </style>

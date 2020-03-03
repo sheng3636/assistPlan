@@ -31,7 +31,8 @@
             </el-col>
             <el-col :md="4">
               <el-form-item label="项目创建时间" prop="projectTime">
-                <el-date-picker v-model="queryParams.projectTime" type="datetime" placeholder="选择日期时间" style="width:100%">
+                <el-date-picker v-model="queryParams.projectTime" type="datetime" placeholder="选择日期时间"
+                  style="width:100%">
                 </el-date-picker>
               </el-form-item>
             </el-col>
@@ -55,7 +56,7 @@
             <span class="countItem gray">进行中 1</span>
           </el-col>
           <el-col :md="4" :offset="9" class="tableBtnGroup">
-            <el-button type="primary" size="mini" @click="addEditClick">新建</el-button>
+            <el-button type="primary" size="mini" @click="addEditClick('add')">新建</el-button>
           </el-col>
         </el-row>
       </div>
@@ -65,12 +66,16 @@
         <el-table-column prop="projectInnerNum" label="项目内部编号" width="220" align="center" sortable />
         <el-table-column prop="projectOuterNum" label="项目外部编号" width="220" align="center" sortable />
         <el-table-column prop="projectMemo" label="项目主要内容" :show-overflow-tooltip="true" align="center" sortable />
-        <el-table-column prop="projectLeader.name" label="项目负责人" width="150" align="center" sortable />
+        <el-table-column prop="projectLeader" label="项目负责人" width="150" align="center" sortable>
+          <template slot-scope="scope">
+            {{ scope.row.projectLeader.name }}
+          </template>
+        </el-table-column>
         <el-table-column prop="projectTime" label="创建时间" width="220" align="center" sortable />
         <el-table-column prop="projectStatus" label="项目状态" width="150" align="center" sortable />
         <el-table-column label="操作" align="center" width="220">
           <template slot-scope="scope">
-            <el-button type="primary" size="mini">进入</el-button>
+            <el-button type="primary" size="mini" @click="toProject(scope.row)">进入</el-button>
             <el-dropdown trigger="click">
               <el-button type="success" size="mini" class="tab_select">
                 更多菜单
@@ -104,7 +109,8 @@ export default {
   components: { addProject, projectDetail },
   data() {
     return {
-      statusOpts: [// 项目状态下拉option
+      statusOpts: [
+        // 项目状态下拉option
         {
           value: '0',
           label: '已完成'
@@ -114,14 +120,14 @@ export default {
           label: '进行中'
         }
       ],
-      addEditForm: {// 新增编辑项目表单参数
+      addEditForm: {
+        // 新增编辑项目表单参数
         projectName: '',
         projectInnerNum: '',
         projectOuterNum: '',
         projectMemo: '',
         projectLeader: []
       },
-      leaderArr:[],// 项目负责人数组
       detailForm: {},
       dialogVisible: false, // 是否弹出新增编辑弹窗
       detailVisible: false, // 是否弹出详情弹窗
@@ -145,8 +151,8 @@ export default {
           projectOuterNum: '202012215986478',
           projectMemo: '台州市十四五时期国民经济和社会发展规划编制',
           projectLeader: {
-            name:'柴贤龙,沈帆',
-            id:["4-1-1", "4-1-2"]
+            name: '柴贤龙,沈帆',
+            id: ['4-1-1', '4-1-2']
           },
           projectTime: '2019-12-21  12:21:12',
           projectStatus: '进行中'
@@ -157,8 +163,8 @@ export default {
           projectOuterNum: '202012215986470',
           projectMemo: '杭州市十四五时期国民经济和社会发展规划编制',
           projectLeader: {
-            name:'徐萌,范玲',
-            id:["1-1-1", "2-1-1"],
+            name: '徐萌,范玲',
+            id: ['1-1-1', '2-1-1']
           },
           projectTime: '2019-11-20  10:15:14',
           projectStatus: '已完成'
@@ -168,6 +174,15 @@ export default {
   },
   mounted() {},
   methods: {
+    toProject(row){
+      let info = {
+        menueDisable:false,
+        projectName:row.projectName,
+        projectInnerNum:row.projectInnerNum,
+        projectOuterNum:row.projectOuterNum
+      }
+      this.$store.commit('SET_MENUE_DISABLE', info)
+    },
     detailClick(row) {
       this.detailVisible = true
       this.detailForm = row
@@ -187,7 +202,7 @@ export default {
     // 弹出新增编辑弹窗
     addEditClick(row) {
       this.dialogVisible = true
-      if(row) {
+      if (row !== 'add') {
         this.dialogTitle = '编辑项目'
         this.addEditForm = {
           projectName: row.projectName,

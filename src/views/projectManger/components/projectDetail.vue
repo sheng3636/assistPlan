@@ -9,8 +9,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="12">
-          <el-form-item label="项目负责人" prop="projectLeader">
-            <el-input v-model="detailForm.projectLeader.name" readonly placeholder="请输入项目内部编号" />
+          <el-form-item label="项目负责人" prop="projectLeader.name">
+            <el-input v-model="detailForm.projectLeader.name" readonly placeholder="请输入项目负责人" />
           </el-form-item>
         </el-col>
       </el-row>

@@ -108,6 +108,13 @@
               </el-row>
             </div>
           </div>
+          
+          <!--分页-->
+          <div class="block">
+            <el-pagination :current-page.sync="currentPage" :page-sizes="[10, 20, 30, 40]" :page-size="pageSize"
+              layout="total, sizes, prev, pager, next, jumper" :total="total" @size-change="handleSizeChange"
+              @current-change="handleCurrentChange" />
+          </div>
         </div>
         <div class="personWrap" v-if="!docuOrPerson">
           <h3 class="checkDocuName">XXX城市道路规划大纲V2</h3>
@@ -229,6 +236,7 @@ export default {
 
     dialogClose() {
       this.divisionVisible = false
+      this.docuOrPerson = true
     },
     onSubmit() {
       this.divisionVisible = false

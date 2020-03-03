@@ -2,7 +2,7 @@
 <template>
   <div class="app-container">
     <div class="main-wrapper">
-      <div class="main-header">项目管理</div>
+      <div class="main-header">大纲管理</div>
       <div class="main-content">
         <el-form ref="queryParams" :model="queryParams" label-width="80px" label-position="top">
           <el-row>
@@ -31,7 +31,7 @@
     <div class="main-wrapper">
       <div class="main-header clearfix">
         <el-row>
-          <el-col :span="1">项目列表</el-col>
+          <el-col :span="1">大纲列表</el-col>
           <el-col :md="15" class="tableRow">
             <span class="countItem blue">全部大纲</span>
             <span class="countItem cyan">最近使用</span>
@@ -50,10 +50,11 @@
       <div class="main-content">
         <!--列表-->
         <div class="outlineWrp">
-          <div class="outlineItem">
+          <div class="outlineItem" v-for="(item,index) in outlineList" :key="index">
             <div class="outlineInfo">
-              <h3>台州市"十四五"规划编制大纲</h3>
-              <p class="date">2019-12-21 12:21:12</p>
+              <h3 v-if="!item.isEdit" :ref="'outlineItem' + item.id">{{item.name}}</h3>
+              <el-input v-else autofocus v-model="item.name" @blur.stop="NodeBlur(item)"></el-input>
+              <p class="date">{{item.time}}</p>
             </div>
 
             <el-row class="operationRow">
@@ -70,7 +71,7 @@
                     <el-dropdown-item>打开</el-dropdown-item>
                     <el-dropdown-item>打印</el-dropdown-item>
                     <el-dropdown-item>删除</el-dropdown-item>
-                    <el-dropdown-item>重命名</el-dropdown-item>
+                    <el-dropdown-item @click.native="renameOutline(item)">重命名</el-dropdown-item>
                     <el-dropdown-item>属性</el-dropdown-item>
                   </el-dropdown-menu>
                 </el-dropdown>
@@ -86,7 +87,7 @@
         </div>
       </div>
     </div>
-
+    <!-- 新建大纲 -->
     <el-dialog title="新建大纲" :visible.sync="createVisible" :close-on-click-modal="false" :close-on-press-escape="false"
       width="25%">
       <el-form ref="createForm" :model="createFrom" :rules="rules" label-width="80px" label-position="top">
@@ -104,6 +105,7 @@
         <el-button type="primary" @click="onSubmit('createForm')">确 定</el-button>
       </span>
     </el-dialog>
+    
   </div>
 </template>
 
@@ -111,8 +113,22 @@
 export default {
   data() {
     return {
+      outlineList:[
+        {
+          id:'001',
+          name:'台州市"十四五"规划编制大纲',
+          time:'2019-12-21 12:21:12',
+          isEdit: false
+        },
+        {
+          id:'002',
+          name:'台州市"三五"规划编制大纲',
+          time:'2019-12-21 12:21:12',
+          isEdit: false
+        }
+      ],
       createVisible: false, // 是否显示新建大纲弹窗
-      total: 1,
+      total: 2,
       currentPage: 0,
       pageSize: 10,
       createFrom: {
@@ -147,6 +163,18 @@ export default {
   },
   mounted() {},
   methods: {
+    // 修改大纲名称
+    renameOutline(item){
+      if (!item.isEdit) {
+        this.$set(item, 'isEdit', true)
+      }
+    },
+    // 输入框失焦
+    NodeBlur(item) {
+      if (item.isEdit) {
+        this.$set(item, 'isEdit', false)
+      }
+    },
     jumpROuter(name, query) {
       // this.$router.push({ name:name, params:params})
       this.$router.push({ path: '/outlineAuthorized/' + name, query: query })

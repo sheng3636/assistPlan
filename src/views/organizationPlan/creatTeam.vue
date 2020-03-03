@@ -65,7 +65,7 @@
       :close-on-press-escape="false" :before-close="dialogClose" width="35%">
       <div class="dialogBody">
         <el-tree :data="branchData" :props="defaultProps" ref="tree"  highlight-current node-key="id" show-checkbox
-          default-expand-all>
+          default-expand-all class="treeWrap">
         </el-tree>
       </div>
       <span slot="footer" class="dialog-footer">
@@ -343,3 +343,10 @@ export default {
   }
 }
 </script>
+<style lang="scss" scoped>
+.treeWrap {
+    padding: 10px 0;
+    max-height: 500px;
+    overflow-y: auto;
+}
+</style>
