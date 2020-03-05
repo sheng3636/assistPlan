@@ -4,9 +4,9 @@
     <div class="systemInfo">
       <el-row>
         <el-col :span="24" class="headerTxt">
-          <span>项目名称：{{this.$store.state.projectInfo.projectName}}</span>
-          <span>内部编号：{{this.$store.state.projectInfo.projectInnerNum}}</span>
-          <span>外部编号：{{this.$store.state.projectInfo.projectOuterNum}}</span>
+          <span>项目名称：{{this.$store.state.projectInfo.pname}}</span>
+          <span>内部编号：{{this.$store.state.projectInfo.serialnumber}}</span>
+          <span>外部编号：{{this.$store.state.projectInfo.externalnumber}}</span>
         </el-col>
       </el-row>
     </div>
@@ -33,12 +33,21 @@
 </template>
 
 <script>
+import {getStore} from '@/utils'
 import { mapGetters } from 'vuex'
 import Hamburger from '@/components/Hamburger'
 
 export default {
   components: {
     Hamburger
+  },
+  data(){
+    return{
+      projectInfo:{}// 项目信息
+    }
+  },
+  mounted(){
+    this.projectInfo = getStore('projectInfo')
   },
   computed: {
     ...mapGetters([

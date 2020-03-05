@@ -7,15 +7,15 @@
         <el-form ref="queryParams" :model="queryParams" label-width="80px" label-position="top">
           <el-row>
             <el-col :md="5" :sm="4">
-              <el-form-item label="大纲类型" prop="outlineType">
-                <el-select v-model="queryParams.outlineType" filterable placeholder="请选择一项" style="width: 100%">
-                  <el-option v-for="item in outlineOption" :key="item.value" :label="item.label" :value="item.value" />
+              <el-form-item label="大纲类型" prop="outline_type">
+                <el-select v-model="queryParams.outline_type" filterable placeholder="请选择一项" style="width: 100%">
+                  <el-option v-for="item in outlineOpts" :key="item.value" :label="item.label" :value="item.value" />
                 </el-select>
               </el-form-item>
             </el-col>
             <el-col :md="5" :sm="4">
-              <el-form-item label="大纲名称" prop="outlineName">
-                <el-input v-model="queryParams.outlineName" />
+              <el-form-item label="大纲名称" prop="outline_name">
+                <el-input v-model="queryParams.outline_name" />
               </el-form-item>
             </el-col>
             <el-col :md="6" :sm="4">
@@ -52,15 +52,17 @@
         <div class="outlineWrp">
           <div class="outlineItem" v-for="(item,index) in outlineList" :key="index">
             <div class="outlineInfo">
-              <h3 v-if="!item.isEdit" :ref="'outlineItem' + item.id">{{item.name}}</h3>
-              <el-input v-else autofocus v-model="item.name" @blur.stop="NodeBlur(item)"></el-input>
-              <p class="date">{{item.time}}</p>
+              <h3 v-if="!item.isEdit" :ref="'outlineItem' + item.outlineid">{{item.outlinename}}</h3>
+              <!-- <h3>{{item.outlinename}}</h3> -->
+              <el-input v-else autofocus v-model="item.outlinename" @blur.stop="NodeBlur(item)" style="width:93%;">
+              </el-input>
+              <p class="date">{{dateFormat(item.createtime)}}</p>
             </div>
 
             <el-row class="operationRow">
-              <el-col :md="8">规划类</el-col>
+              <el-col :md="8">{{item.paraname}}</el-col>
               <el-col :md="8">
-                <el-button type="success" size="mini" @click="jumpROuter('Tinymce',{})">打开</el-button>
+                <el-button type="success" size="mini" @click="jumpROuter('Tinymce',item.outlineid)">打开</el-button>
               </el-col>
               <el-col :md="8">
                 <el-dropdown>
@@ -70,7 +72,7 @@
                   <el-dropdown-menu slot="dropdown">
                     <el-dropdown-item>打开</el-dropdown-item>
                     <el-dropdown-item>打印</el-dropdown-item>
-                    <el-dropdown-item>删除</el-dropdown-item>
+                    <el-dropdown-item @click.native="deleteOutline(item)">删除</el-dropdown-item>
                     <el-dropdown-item @click.native="renameOutline(item)">重命名</el-dropdown-item>
                     <el-dropdown-item>属性</el-dropdown-item>
                   </el-dropdown-menu>
@@ -90,81 +92,125 @@
     <!-- 新建大纲 -->
     <el-dialog title="新建大纲" :visible.sync="createVisible" :close-on-click-modal="false" :close-on-press-escape="false"
       width="25%">
-      <el-form ref="createForm" :model="createFrom" :rules="rules" label-width="80px" label-position="top">
-        <el-form-item label="大纲名称" prop="outLineName">
-          <el-input v-model="createFrom.outLineName" placeholder="请输入大纲名称" />
+      <el-form ref="createForm" :model="createFrom" :rules="createRules" label-width="80px" label-position="top">
+        <el-form-item label="大纲名称" prop="outline_name">
+          <el-input v-model="createFrom.outline_name" placeholder="请输入大纲名称" />
         </el-form-item>
-        <el-form-item label="大纲类型" prop="outlineType">
-          <el-select v-model="createFrom.outlineType" filterable placeholder="请选择一项" style="width: 100%">
-            <el-option v-for="item in outlineOption" :key="item.value" :label="item.label" :value="item.value" />
+        <el-form-item label="大纲类型" prop="outline_type">
+          <el-select v-model="createFrom.outline_type" filterable placeholder="请选择一项" style="width: 100%">
+            <el-option v-for="item in outlineOpts" :key="item.value" :label="item.label" :value="item.value" />
           </el-select>
         </el-form-item>
       </el-form>
       <span slot="footer" class="dialog-footer">
-        <el-button @click="dialogClose">取 消</el-button>
-        <el-button type="primary" @click="onSubmit('createForm')">确 定</el-button>
+        <el-button @click="createDialogClose">取 消</el-button>
+        <el-button type="primary" @click="createSubmit('createForm')">确 定</el-button>
       </span>
     </el-dialog>
-    
+
   </div>
 </template>
 
 <script>
+import { apiGet, apiPostCustom, apiPost } from '@/utils/axios'
 export default {
   data() {
     return {
-      outlineList:[
-        {
-          id:'001',
-          name:'台州市"十四五"规划编制大纲',
-          time:'2019-12-21 12:21:12',
-          isEdit: false
-        },
-        {
-          id:'002',
-          name:'台州市"三五"规划编制大纲',
-          time:'2019-12-21 12:21:12',
-          isEdit: false
-        }
-      ],
-      createVisible: false, // 是否显示新建大纲弹窗
-      total: 2,
-      currentPage: 0,
-      pageSize: 10,
-      createFrom: {
-        outLineName: '',
-        outlineType: ''
-      },
-      rules: {
-        outLineName: [
-          { required: true, message: '请输入大纲名称', trigger: 'blur' }
-        ],
-        outlineType: [
-          { required: true, message: '请选择大纲类型', trigger: 'change' }
-        ]
-      },
+      outlineOpts: [],
+      total: 0, // 项目表格总数
+      currentPage: 1, // 表格当前页码
+      pageSize: 10, // 表格整页大小
       queryParams: {
-        pageSize: 10,
-        page: 1,
-        outlineType: '',
-        outlineName: ''
+        // 表格查询参数
+        Page: 1,
+        PageSize: 10,
+        pid: '',
+        outline_type: '',
+        outline_name: ''
       },
-      outlineOption: [
-        {
-          value: 0,
-          label: '城市规划项目'
-        },
-        {
-          value: 1,
-          label: '商业规划项目'
-        }
-      ]
+      outlineList: [], //大纲列表
+      createVisible: false, // 是否显示新建大纲弹窗
+      createFrom: {
+        pid: '',
+        outline_type: '',
+        outline_name: ''
+      },
+      createRules: {
+        outline_type: [
+          { required: true, message: '请选择大纲类型', trigger: 'change' }
+        ],
+        outline_name: [
+          { required: true, message: '请输入大纲名称', trigger: 'blur' }
+        ]
+      }
     }
   },
-  mounted() {},
+  mounted() {
+    // 查询大纲类型
+    apiGet(this, '/outline/findOutlineType').then(res => {
+      this.outlineOpts = res.data
+    })
+    this.queryOutLineListFn()
+  },
   methods: {
+    // 查询大纲列表
+    queryOutLineListFn() {
+      let params = this.queryParams
+      params.pid = this.$store.state.projectInfo.pid
+      apiGet(this, '/outline/queryOutline', params).then(res => {
+        this.total = res.total
+        this.outlineList = res.data
+      })
+    },
+    // 时间格式化
+    dateFormat(dateTime) {
+      var date = new Date(dateTime) //时间戳为10位需*1000，时间戳为13位的话不需乘1000
+      var year = date.getFullYear(),
+        month = ('0' + (date.getMonth() + 1)).slice(-2),
+        sdate = ('0' + date.getDate()).slice(-2),
+        hour = ('0' + date.getHours()).slice(-2),
+        minute = ('0' + date.getMinutes()).slice(-2),
+        second = ('0' + date.getSeconds()).slice(-2)
+      return (
+        year +
+        '-' +
+        month +
+        '-' +
+        sdate +
+        ' ' +
+        hour +
+        ':' +
+        minute +
+        ':' +
+        second
+      )
+    },
+    // pageSize 改变时会触发
+    handleSizeChange(val) {
+      this.queryParams.pageSize = val
+      this.queryOutLineListFn()
+    },
+    // currentPage 改变时会触发
+    handleCurrentChange(val) {
+      this.queryParams.Page = val
+      this.queryOutLineListFn()
+    },
+    // 提交创建大纲表单并清空表单
+    createSubmit(formName) {
+      this.$refs[formName].validate(valid => {
+        if (valid) {
+          this.createFrom.pid = this.$store.state.projectInfo.pid
+          apiPost(this, 'outline/saveOutline', this.createFrom).then(res => {
+            this.queryOutLineListFn()
+            this.createDialogClose()
+          })
+        } else {
+          return false
+        }
+      })
+    },
     // 修改大纲名称
-    renameOutline(item){
+    renameOutline(item) {
       if (!item.isEdit) {
         this.$set(item, 'isEdit', true)
       }
@@ -173,52 +219,55 @@ export default {
     NodeBlur(item) {
       if (item.isEdit) {
         this.$set(item, 'isEdit', false)
+        let params = {
+          outline_id: item.outlineid,
+          outline_name: item.outlinename
+        }
+        apiPost(this, '/outline/EndOutline', params).then(res => {
+          this.queryOutLineListFn()
+        })
       }
     },
-    jumpROuter(name, query) {
-      // this.$router.push({ name:name, params:params})
-      this.$router.push({ path: '/outlineAuthorized/' + name, query: query })
+    deleteOutline(item) {
+      let params = {
+        outline_id: item.outlineid
+      }
+      apiPostCustom(
+        this,
+        '/outline/deleteOutline',
+        params,
+        '确认删除该记录吗'
+      ).then(res => {
+        this.queryOutLineListFn()
+      })
     },
-    handleCommand(command) {
-      this.$message('click on item ' + command)
+    // 打开文档进行编辑
+    jumpROuter(name, outlineid) {
+      this.$router.push({ path: '/outlineAuthorized/' + name, query: {outlineid:outlineid} })
     },
-    handleSizeChange(val) {
-      this.params.pageSize = val
-      this.getAreaList(this.params)
-    },
-    handleCurrentChange(val) {
-      this.params.page = val
-      this.getAreaList(this.params)
-    },
+    // 打开新建大纲列表
     createOutline() {
       this.createVisible = true
     },
-    dialogClose() {
+    // 关闭新建大纲弹窗
+    createDialogClose() {
+      this.$refs.createForm.resetFields()
       this.createVisible = false
     },
-    // 提交上传表单并清空表单
-    onSubmit(formName) {
-      this.$refs[formName].validate(valid => {
-        if (valid) {
-        } else {
-          return false
-        }
-      })
-    },
-    // 查询
+    // 查询大纲列表
     queryList: function(formName) {
       this.$refs[formName].validate(valid => {
         if (valid) {
-          console.log('查询')
+          this.queryOutLineListFn()
         } else {
           return false
         }
       })
     },
-    // 重置
+    // 重置大纲列表
     resetData(formName) {
       this.$refs[formName].resetFields()
-      console.log('重置')
+      this.queryOutLineListFn()
     }
   }
 }

@@ -10,10 +10,10 @@
           <p>添加章节标题后会在此显示</p>
         </div>
         <div class="editWrap">
-          <tinymce v-model="content" ref="tinymce"  :height="600" />
+          <tinymce v-model="content" ref="tinymce" :height="600" />
           <p class="saveBtn">
             <el-button type="warning">另存为</el-button>
-            <el-button type="primary">保存</el-button>
+            <el-button type="primary" @click="saveContent">保存</el-button>
           </p>
         </div>
         <div class="intelligenceApp">
@@ -88,6 +88,7 @@
 </template>
 
 <script>
+import { apiPost } from '@/utils/axios'
 import Tinymce from '@/components/Tinymce'
 import treeData1 from '../../utils/treeData'
 const treeData2 = JSON.stringify(treeData1)
@@ -98,7 +99,7 @@ export default {
   components: { Tinymce },
   data() {
     return {
-      content:'',
+      content: '',
       dialogVisible: false,
       setTree: [], // 节点树数据
       defaultProps: {
@@ -123,6 +124,16 @@ export default {
     }
   },
   methods: {
+    saveContent() {
+      let params = {
+        pid:this.$store.state.projectInfo.pid,
+        outlineid:this.$route.query.outlineid,
+        content:this.content
+      }
+      apiPost(this, '/outline/StartEdit', params).then(res => {
+        // this.queryProgressTableFn()
+      })
+    },
     showTmpl() {
       this.dialogVisible = true
       this.setTree = JSON.parse(treeData2).treelist

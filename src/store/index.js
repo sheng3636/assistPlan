@@ -10,10 +10,7 @@ Vue.use(Vuex)
 const state = () => {
   return {
     projectInfo: {
-      menueDisable:true,
-      projectName: '',
-      projectInnerNum: '',
-      projectOuterNum: ''
+      menueDisable:true
     }
   }
 }

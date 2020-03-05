@@ -1,26 +1,37 @@
 <template>
   <el-dialog :title="dialogTitle" :visible.sync="dialogVisible" :close-on-click-modal="false"
-    :close-on-press-escape="false" :before-close="dialogClose" width="45%">
+    :close-on-press-escape="false" :before-close="dialogClose" width="50%">
     <el-form class="dialogBody" ref="dialogForm" :model="addEditForm" :rules="rules" label-width="80px"
       label-position="top">
       <div class="bodyLeft">
-        <el-form-item label="项目名称" prop="projectName">
-          <el-input v-model="addEditForm.projectName" placeholder="请输入项目名称" />
+        <el-form-item label="项目名称" prop="pname">
+          <el-input v-model="addEditForm.pname" placeholder="请输入项目名称" />
         </el-form-item>
-        <el-form-item label="项目内部编号" prop="projectInnerNum">
-          <el-input v-model="addEditForm.projectInnerNum" placeholder="请输入项目内部编号" />
+        <el-form-item label="项目内部编号" prop="serial_number">
+          <el-select v-model="addEditForm.serial_number" placeholder="请选择项目内部编号" style="width:100%;">
+            <el-option v-for="item in serialNum" :key="item.value" :label="item.value" :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="项目外部编号" prop="projectOuterNum">
-          <el-input v-model="addEditForm.projectOuterNum" placeholder="请输入项目外部编号" />
+        <el-form-item label="项目外部编号" prop="external_number">
+          <el-select v-model="addEditForm.external_number" placeholder="请选择项目外部编号" style="width:100%;">
+            <el-option v-for="item in externalNum" :key="item.value" :label="item.value" :value="item.value">
+            </el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="项目主要内容" prop="projectMemo">
-          <el-input v-model="addEditForm.projectMemo" type="textarea" :rows="5" placeholder="请输入项目主要内容" />
+        <el-form-item label="项目时间节点" prop="timeDuring">
+          <el-date-picker v-model="addEditForm.timeDuring" type="datetimerange" range-separator="至"
+            start-placeholder="开始日期" end-placeholder="结束日期" value-format="timestamp" style="width:100%;">
+          </el-date-picker>
+        </el-form-item>
+        <el-form-item label="项目主要内容" prop="main_content">
+          <el-input v-model="addEditForm.main_content" type="textarea" :rows="5" placeholder="请输入项目主要内容" />
         </el-form-item>
       </div>
       <div class="bodyRight">
         <p class="treeLabel"><span>*</span>项目负责人</p>
-        <el-tree :data="branchData" :props="defaultProps" ref="tree" :default-checked-keys='addEditForm.projectLeader' highlight-current node-key="id" show-checkbox
-          default-expand-all class="treeWrap">
+        <el-tree :data="branchData" :props="defaultProps" ref="tree" highlight-current node-key="id" show-checkbox
+          default-expand-all :default-checked-keys="addEditForm.project_leader" class="treeWrap">
         </el-tree>
       </div>
     </el-form>
@@ -31,193 +42,30 @@
   </el-dialog>
 </template>
 <script>
+import { apiGet, apiPost } from '@/utils/axios'
 export default {
   data() {
     return {
+      serialNum: [], // 项目内部编号
+      externalNum: [], // 项目外部编号
       rules: {
-        projectName: [
-          { required: true, message: '请输入项目名称', trigger: 'blur' }
+        pname: [{ required: true, message: '请输入项目名称', trigger: 'blur' }],
+        serial_number: [
+          { required: true, message: '请选择项目内部名称', trigger: ['blur', 'change'] }
         ],
-        projectInnerNum: [
-          { required: true, message: '请输入项目内部名称', trigger: 'blur' }
+        external_number: [
+          { required: true, message: '请选择项目外部名称', trigger: ['blur', 'change'] }
         ],
-        projectOuterNum: [
-          { required: true, message: '请输入项目外部名称', trigger: 'blur' }
+        timeDuring:[
+          {
+            required: true, message: '项目时间节点不能为空', trigger: ['blur', 'change']
+          }
         ],
-        projectMemo: [
+        main_content: [
           { required: true, message: '请输入项目主要内容', trigger: 'blur' }
         ]
       },
-      branchData: [
-        {
-          id: '1',
-          label: '浙江省发展规划院',
-          children: [
-            {
-              id: '1-1',
-              label: '办公室',
-              children: [
-                {
-                  id: '1-1-1',
-                  label: '徐萌'
-                },
-                {
-                  id: '1-1-2',
-                  label: '刘堂福'
-                }
-              ]
-            },
-            {
-              id: '2-1',
-              label: '能源与环境处',
-              children: [
-                {
-                  id: '2-1-1',
-                  label: '范玲'
-                },
-                {
-                  id: '2-1-2',
-                  label: '何恒'
-                },
-                {
-                  id: '2-1-3',
-                  label: '钟晓军'
-                }
-              ]
-            },
-            {
-              id: '3-1',
-              label: '总师办',
-              children: [
-                {
-                  id: '3-1-1',
-                  label: '刘竞'
-                },
-                {
-                  id: '3-1-2',
-                  label: '张颖'
-                }
-              ]
-            },
-            {
-              id: '4-1',
-              label: '城乡建设处',
-              children: [
-                {
-                  id: '4-1-1',
-                  label: '柴贤龙'
-                },
-                {
-                  id: '4-1-2',
-                  label: '沈帆'
-                },
-                {
-                  id: '4-1-3',
-                  label: '吴洁珍'
-                }
-              ]
-            },
-            {
-              id: '5-1',
-              label: '综合处',
-              children: [
-                {
-                  id: '5-1-1',
-                  label: '潘毅刚'
-                },
-                {
-                  id: '5-1-2',
-                  label: '庞亚君'
-                }
-              ]
-            },
-            {
-              id: '6-1',
-              label: '社会发展处',
-              children: [
-                {
-                  id: '6-1-1',
-                  label: '董波'
-                },
-                {
-                  id: '6-1-2',
-                  label: '俞莹'
-                }
-              ]
-            },
-            {
-              id: '7-1',
-              label: '经济研究所',
-              children: [
-                {
-                  id: '7-1-1',
-                  label: '陈文杰'
-                },
-                {
-                  id: '7-1-2',
-                  label: '何垒'
-                }
-              ]
-            },
-            {
-              id: '8-1',
-              label: '机关党委(纪委)',
-              children: [
-                {
-                  id: '8-1-1',
-                  label: '王质明'
-                },
-                {
-                  id: '8-1-2',
-                  label: '周智悦'
-                }
-              ]
-            },
-            {
-              id: '9-1',
-              label: '区域发展处',
-              children: [
-                {
-                  id: '9-1-1',
-                  label: '周世锋'
-                },
-                {
-                  id: '9-1-2',
-                  label: '沈锋'
-                },
-                {
-                  id: '9-1-3',
-                  label: '秦诗立'
-                }
-              ]
-            },
-            {
-              id: '10-1',
-              label: '服务中心',
-              children: [
-                {
-                  id: '10-1-1',
-                  label: '陆军'
-                }
-              ]
-            },
-            {
-              id: '11-1',
-              label: '产业发展处',
-              children: [
-                {
-                  id: '11-1-1',
-                  label: '童相娟'
-                },
-                {
-                  id: '11-1-2',
-                  label: '郭鹏程'
-                }
-              ]
-            }
-          ]
-        }
-      ],
+      branchData: [],
       defaultProps: {
         children: 'children',
         label: 'label'
@@ -225,6 +73,10 @@ export default {
     }
   },
   props: {
+    queryProjectTableFn: {
+      type: Function,
+      default: null
+    },
     dialogTitle: {
       type: String,
       defalut: '新增项目'
@@ -239,29 +91,44 @@ export default {
     }
   },
   mounted() {
-    console.log(this.addEditForm)
+    // 查询内外部编号
+    apiGet(this, '/project/getProject').then(res => {
+      this.serialNum = res.data.serial_number
+      this.externalNum = res.data.external_number
+    })
+    // 查询人员清单
+    apiGet(this, '/project/getUserAndDept2', { username: '' }).then(res => {
+      this.branchData = res.branchData
+    })
   },
   methods: {
     // 关闭弹窗时向父组件发送一个事件
     dialogClose() {
       this.$refs.dialogForm.resetFields()
       this.$emit('dialogClose')
+      this.$refs.tree.setCheckedKeys([])
     },
     // 提交上传表单并清空表单
     onSubmit(formName) {
-      console.log(this.$refs.tree.getCheckedKeys(true))
       this.$refs[formName].validate(valid => {
         if (valid) {
-          // uploadDocu(formData).then(res => {
-          //   this.$message({
-          //     message: res.message,
-          //     type: res.code === '0' ? 'success' : 'error'
-          //   })
-          //   this.$refs[formName].resetFields()
-          //   this.$refs.upload.clearFiles()
-          //   this.formUpload.folder_no = ''
-          //   this.$emit('submitUploadDocu')
-          // })
+          this.addEditForm.project_leader = this.$refs.tree.getCheckedKeys(true)
+          if (this.addEditForm.project_leader.length !== 0) {
+            let url =
+              this.dialogTitle === '新增项目'
+                ? '/project/saveProject'
+                : 'project/updateProject'
+            apiPost(this, url, this.addEditForm).then(res => {
+              this.queryProjectTableFn()
+              this.dialogClose()
+            })
+          } else {
+            this.$message({
+              message: '负责人不能为空',
+              type: 'warning'
+            })
+            return
+          }
         } else {
           return false
         }
@@ -278,12 +145,12 @@ export default {
   justify-content: space-between;
   .bodyLeft {
     width: 44%;
-    height: 500px;
+    height: 605px;
     background: rgba(242, 242, 242, 1);
   }
   .bodyRight {
     width: 54%;
-    height: 500px;
+    height: 605px;
     background: rgba(242, 242, 242, 1);
     .treeLabel {
       padding: 0 15px;

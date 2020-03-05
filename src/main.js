@@ -10,6 +10,9 @@ import '@/styles/index.scss' // global css
 import App from './App'
 import store from './store'
 import router from './router'
+import {
+  getStore
+} from '@/utils'
 
 import '@/icons' // icon
 import '@/permission' // permission control
@@ -35,5 +38,14 @@ new Vue({
   el: '#app',
   router,
   store,
+  created () {
+    if (getStore('projectInfo')) {
+      this.$store.state.projectInfo = getStore('projectInfo')
+    } else {
+      this.$store.state.projectInfo = {
+        menueDisable: true
+      }
+    }
+  },
   render: h => h(App)
 })
